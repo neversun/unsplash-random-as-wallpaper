@@ -1,0 +1,6 @@
+{
+  "featured": "false", /* Limit selection to featured photos */
+  "username": "", /* Limit selection to a single user. */
+  "query": "people", /* Limit selection to photos matching a search term. */
+  "orientation": "" /* Filter search results by photo orientation. Valid values are landscape, portrait, and squarish. */
+}

@@ -1,0 +1,21 @@
+{
+  "name": "desktop-background",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create-installer:windows": "nexe main.js --target=windows-x64-10.15.3 -o dist/desktop-background.exe"
+  },
+  "author": "Robert Scheinpflug",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "strip-json-comments": "^3.0.1",
+    "unsplash-js": "^5.0.0",
+    "wallpaper": "^4.4.1"
+  },
+  "devDependencies": {
+    "nexe": "^3.3.1"
+  }
+}
