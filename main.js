@@ -1,6 +1,7 @@
 const fs = require('fs')
 const util = require('util')
 const path = require('path')
+const { spawnSync } = require('child_process')
 
 const promisify = util.promisify
 
@@ -9,13 +10,12 @@ const readFileAsync = promisify(fs.readFile)
 const fetch = require('node-fetch')
 global.fetch = fetch
 
-const wallpaper = require('wallpaper')
 const stripJsonComments = require('strip-json-comments')
 const Unsplash = require('unsplash-js').default
 
 async function main() {
-  const APP_ACCESS_KEY = await readFileAsync(path.join(__dirname, 'config_access-key.txt'), { encoding: 'utf8' })
-  const APP_SECRET = await readFileAsync(path.join(__dirname, 'config_secret-key.txt'), { encoding: 'utf8' })
+  const APP_ACCESS_KEY = await readFileAsync(path.join(process.cwd(), 'config_access-key.txt'), { encoding: 'utf8' })
+  const APP_SECRET = await readFileAsync(path.join(process.cwd(), 'config_secret-key.txt'), { encoding: 'utf8' })
 
   if (!APP_ACCESS_KEY || !APP_SECRET) {
     throw new Error('Could not read config_access-key.txt or config_secret-key.txt')
@@ -31,9 +31,9 @@ async function main() {
   let config = {}
 
   try {
-    const configFilePath = `${path.join(__dirname, 'config_random-photo.json')}`
+    const configFilePath = `${path.join(process.cwd(), 'config_random-photo.json')}`
 
-    console.log(`Reading config file "${path}"`)
+    console.log(`Reading config file "${configFilePath}"`)
 
     const configFileContent = await readFileAsync(configFilePath, { encoding: 'utf8' })
 
@@ -43,11 +43,10 @@ async function main() {
   }
 
   const response = await unsplash.photos.getRandomPhoto(config)
-
   const photo = await response.json()
 
   const fileName = `${photo.user.first_name}-${photo.user.last_name}-${photo.id}-unsplash.jpg`.toLowerCase()
-  const outputPath = path.join(__dirname, 'data', fileName)
+  const outputPath = path.join(process.cwd(), 'data', fileName)
 
   const downloadUrl = photo.urls.raw
 
@@ -63,7 +62,7 @@ async function main() {
 
   console.log(`Set desktop wallpaper to ${outputPath}`)
 
-  await wallpaper.set(outputPath)
+  await setWallpaper(outputPath)
 }
 
 function writeStream(path, readable) {
@@ -80,6 +79,13 @@ function writeStream(path, readable) {
 
     readable.pipe(writeStream)
   })
+}
+
+function setWallpaper(outputPath) {
+  const {  error } = spawnSync(path.join(process.cwd(), 'node_modules/win-wallpaper/wallpaper.exe'), [outputPath])
+  if (error) {
+    throw error
+  }
 }
 
 (async() => {

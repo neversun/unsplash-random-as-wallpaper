@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "create-installer:windows": "nexe main.js --target=windows-x64-10.15.3 -o dist/desktop-background.exe"
+    "create-installer:windows": "npm run dist:clean && npm run pkg:create-exe && npm run pkg:after-run",
+    "dist:clean": "del-cli ./dist",
+    "pkg:create-exe": "pkg main.js --output dist/desktop-background.exe",
+    "pkg:after-run": "make-dir ./dist/node_modules && cpy --parents ./node_modules/win-wallpaper ./dist && make-dir dist/data && cpy ./config_random-photo.json ./config_access-key.txt ./config_secret-key.txt ./dist"
   },
   "author": "Robert Scheinpflug",
   "license": "MIT",
@@ -13,9 +16,12 @@
     "node-fetch": "^2.6.0",
     "strip-json-comments": "^3.0.1",
     "unsplash-js": "^5.0.0",
-    "wallpaper": "^4.4.1"
+    "win-wallpaper": "^1.0.0"
   },
   "devDependencies": {
-    "nexe": "^3.3.1"
+    "cpy-cli": "^2.0.0",
+    "del-cli": "^2.0.0",
+    "make-dir-cli": "^2.0.0",
+    "pkg": "^4.4.0"
   }
 }
